@@ -1,0 +1,24 @@
+{
+  "name": "bfx-hf-strategy-perf",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "lint": "standard",
+    "test": "mocha test",
+    "coverage": "nyc --reporter=lcov npm test"
+  },
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0",
+    "nyc": "^15.1.0",
+    "sinon": "^14.0.0",
+    "standard": "^17.0.0"
+  },
+  "dependencies": {
+    "bignumber.js": "^9.0.2"
+  }
+}
