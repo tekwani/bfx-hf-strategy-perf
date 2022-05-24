@@ -80,7 +80,7 @@ class PerformanceManager extends EventEmitter {
   addOrder ({ amount, price }) {
     const total = amount.multipliedBy(price)
 
-    if (amount.isGreaterThanOrEqualTo(0)) {
+    if (amount.isPositive()) {
       this.availableFunds = this.availableFunds.minus(total)
       this.openOrders.push({ amount, price })
       this.selfUpdate()
