@@ -32,6 +32,10 @@ class PerformanceManager extends EventEmitter {
    * @returns {Error|null}
    */
   canOpenOrder (amount, price) {
+    if (amount.isZero()) {
+      throw new Error('amount can not be zero')
+    }
+
     const positionSize = this.positionSize()
     const newPositionSize = positionSize.plus(amount)
     if (newPositionSize.isGreaterThan(this.maxPositionSize)) {
