@@ -1,6 +1,7 @@
 const DrawdownWatcher = require('./DrawdownWatcher')
 const AbsoluteStopLossWatcher = require('./AbsoluteStopLossWatcher')
 const PercentageStopLossWatcher = require('./PercentageStopLossWatcher')
+const { ExitModes } = require('./ExitModes')
 const BigNumber = require('bignumber.js')
 
 const createWatchers = (performanceManager, {
@@ -32,7 +33,7 @@ const createWatchers = (performanceManager, {
 }
 
 module.exports = (performanceManager, abortStrategy, opts) => {
-  const { exitPositionMode } = opts
+  const { exitPositionMode = ExitModes.CLOSE_AT_MARKET } = opts
   const watchers = createWatchers(performanceManager, opts)
 
   watchers.forEach((watcher) => {
