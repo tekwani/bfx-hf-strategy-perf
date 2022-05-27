@@ -1,7 +1,7 @@
 const DrawdownWatcher = require('./DrawdownWatcher')
 const AbsoluteStopLossWatcher = require('./AbsoluteStopLossWatcher')
 const PercentageStopLossWatcher = require('./PercentageStopLossWatcher')
-const { ExitModes } = require('./ExitModes')
+const ExitModes = require('./ExitModes')
 const BigNumber = require('bignumber.js')
 
 const createWatchers = (performanceManager, {
