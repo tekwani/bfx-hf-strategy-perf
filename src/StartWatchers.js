@@ -13,7 +13,10 @@ const createWatchers = (performanceManager, {
 
   if (maxDrawdown) {
     watchers.push(
-      new DrawdownWatcher(performanceManager, new BigNumber(maxDrawdown))
+      new DrawdownWatcher(
+        performanceManager,
+        new BigNumber(maxDrawdown).dividedBy(100)
+      )
     )
   }
 
@@ -25,7 +28,10 @@ const createWatchers = (performanceManager, {
 
   if (percStopLoss) {
     watchers.push(
-      new PercentageStopLossWatcher(performanceManager, new BigNumber(percStopLoss))
+      new PercentageStopLossWatcher(
+        performanceManager,
+        new BigNumber(percStopLoss).dividedBy(100)
+      )
     )
   }
 
