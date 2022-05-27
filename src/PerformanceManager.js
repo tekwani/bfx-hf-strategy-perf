@@ -4,7 +4,7 @@ const BigNumber = require('bignumber.js')
 class PerformanceManager extends EventEmitter {
   /**
    * @param priceFeed
-   * @param {BigNumber} maxPositionSize
+   * @param {BigNumber|undefined} maxPositionSize
    * @param {BigNumber} allocation
    */
   constructor (priceFeed, {
@@ -38,7 +38,7 @@ class PerformanceManager extends EventEmitter {
 
     const positionSize = this.positionSize()
     const newPositionSize = positionSize.plus(amount)
-    if (newPositionSize.isGreaterThan(this.maxPositionSize)) {
+    if (this.maxPositionSize && newPositionSize.isGreaterThan(this.maxPositionSize)) {
       return new Error(`order size exceeds maximum position size (order amount: ${amount}, current size: ${positionSize}, max size: ${this.maxPositionSize})`)
     }
 
