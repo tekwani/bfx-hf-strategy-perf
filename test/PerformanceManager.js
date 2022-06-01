@@ -184,4 +184,15 @@ describe('PerformanceManager', () => {
       expect(err.message).to.eq('short positions are not allowed in this version')
     })
   })
+
+  describe('equity curve', () => {
+    const priceFeed = new PriceFeed()
+    const pos = new PerformanceManager(priceFeed, constraints)
+
+    it('it should return available funds if price is not loaded', () => {
+      const equityCurve = pos.equityCurve()
+
+      expect(equityCurve).to.be.eq(pos.availableFunds)
+    })
+  })
 })
