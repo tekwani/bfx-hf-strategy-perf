@@ -116,6 +116,9 @@ class PerformanceManager extends EventEmitter {
    * @returns {BigNumber}
    */
   equityCurve () {
+    if (!this.priceFeed.price) {
+      return this.availableFunds
+    }
     return this.priceFeed.price.multipliedBy(this.positionSize()).plus(this.availableFunds)
   }
 
