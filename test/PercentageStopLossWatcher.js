@@ -10,21 +10,18 @@ const PriceFeed = require('../src/PriceFeed')
 
 describe('PercentageStopLossWatcher', () => {
   it('should emit stop event', (done) => {
-    const priceFeed = new PriceFeed(new BigNumber(1000))
+    const priceFeed = new PriceFeed(1000)
     const pos = new PerformanceManager(priceFeed, {
-      maxPositionSize: new BigNumber(10),
-      allocation: new BigNumber(1000)
+      maxPositionSize: 10,
+      allocation: 1000
     })
-    const watcher = new PercentageStopLossWatcher(pos, new BigNumber(0.2))
+    const watcher = new PercentageStopLossWatcher(pos, 0.2)
     watcher.start()
     watcher.abortStrategy = stub()
 
-    pos.addOrder({
-      amount: new BigNumber(1),
-      price: new BigNumber(1000)
-    })
+    pos.addOrder(1, 1000)
 
-    priceFeed.update(new BigNumber(800))
+    priceFeed.update(800)
 
     setImmediate(() => {
       assert.called(watcher.abortStrategy)

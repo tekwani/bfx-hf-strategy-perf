@@ -4,8 +4,8 @@ const BigNumber = require('bignumber.js')
 class PerformanceManager extends EventEmitter {
   /**
    * @param priceFeed
-   * @param {BigNumber|undefined} maxPositionSize
-   * @param {BigNumber} allocation
+   * @param maxPositionSize
+   * @param allocation
    */
   constructor (priceFeed, {
     maxPositionSize,
@@ -13,8 +13,8 @@ class PerformanceManager extends EventEmitter {
   }) {
     super()
 
-    this.maxPositionSize = maxPositionSize
-    this.allocation = allocation
+    this.maxPositionSize = maxPositionSize && new BigNumber(maxPositionSize)
+    this.allocation = allocation && new BigNumber(allocation)
     this.availableFunds = new BigNumber(allocation)
     this.priceFeed = priceFeed
 
@@ -27,11 +27,14 @@ class PerformanceManager extends EventEmitter {
   }
 
   /**
-   * @param {BigNumber} amount
-   * @param {BigNumber} price
+   * @param amount
+   * @param price
    * @returns {Error|null}
    */
   canOpenOrder (amount, price) {
+    amount = new BigNumber(amount)
+    price = new BigNumber(price)
+
     if (amount.isZero()) {
       throw new Error('amount can not be zero')
     }
@@ -81,7 +84,10 @@ class PerformanceManager extends EventEmitter {
     )
   }
 
-  addOrder ({ amount, price }) {
+  addOrder (amount, price) {
+    amount = new BigNumber(amount)
+    price = new BigNumber(price)
+
     const total = amount.multipliedBy(price)
 
     if (amount.isPositive()) {
