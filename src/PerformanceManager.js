@@ -12,9 +12,12 @@ class PerformanceManager extends EventEmitter {
     allocation
   }) {
     super()
+    if (!allocation) {
+      throw new Error('Capital Allocation is mandatory')
+    }
 
     this.maxPositionSize = maxPositionSize && new BigNumber(maxPositionSize)
-    this.allocation = allocation && new BigNumber(allocation)
+    this.allocation = new BigNumber(allocation)
     this.availableFunds = new BigNumber(allocation)
     this.priceFeed = priceFeed
 
