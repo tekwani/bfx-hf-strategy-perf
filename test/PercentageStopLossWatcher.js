@@ -2,7 +2,6 @@
 /* eslint-env mocha */
 
 const { stub, assert } = require('sinon')
-const BigNumber = require('bignumber.js')
 
 const PerformanceManager = require('../src/PerformanceManager')
 const PercentageStopLossWatcher = require('../src/PercentageStopLossWatcher')
