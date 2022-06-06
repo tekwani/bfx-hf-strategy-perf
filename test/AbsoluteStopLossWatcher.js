@@ -2,7 +2,6 @@
 /* eslint-env mocha */
 
 const { stub, assert } = require('sinon')
-const BigNumber = require('bignumber.js')
 
 const PerformanceManager = require('../src/PerformanceManager')
 const AbsoluteStopLossWatcher = require('../src/AbsoluteStopLossWatcher')
@@ -10,21 +9,18 @@ const PriceFeed = require('../src/PriceFeed')
 
 describe('AbsoluteStopLossWatcher', () => {
   it('should emit stop event', (done) => {
-    const priceFeed = new PriceFeed(new BigNumber(1000))
+    const priceFeed = new PriceFeed(1000)
     const pos = new PerformanceManager(priceFeed, {
-      maxPositionSize: new BigNumber(10),
-      allocation: new BigNumber(1000)
+      maxPositionSize: 10,
+      allocation: 1000
     })
-    const watcher = new AbsoluteStopLossWatcher(pos, new BigNumber(100))
+    const watcher = new AbsoluteStopLossWatcher(pos, 100)
     watcher.start()
     watcher.abortStrategy = stub()
 
-    pos.addOrder({
-      amount: new BigNumber(1),
-      price: new BigNumber(1000)
-    })
+    pos.addOrder(1, 1000)
 
-    priceFeed.update(new BigNumber(800))
+    priceFeed.update(800)
 
     setImmediate(() => {
       assert.called(watcher.abortStrategy)

@@ -9,11 +9,11 @@ const PerformanceManager = require('../src/PerformanceManager')
 const PriceFeed = require('../src/PriceFeed')
 
 describe('PerformanceManager', () => {
-  const priceFeed = new PriceFeed(new BigNumber(35000))
+  const priceFeed = new PriceFeed(35000)
 
   const constraints = {
-    maxPositionSize: new BigNumber(1),
-    allocation: new BigNumber(13000)
+    maxPositionSize: 1,
+    allocation: 13000
   }
 
   describe('position management', () => {
@@ -32,28 +32,16 @@ describe('PerformanceManager', () => {
     })
 
     it('add orders', (done) => {
-      pos.addOrder({
-        amount: new BigNumber('0.1'),
-        price: new BigNumber('35000')
-      })
+      pos.addOrder('0.1', '35000')
 
-      pos.addOrder({
-        amount: new BigNumber('0.1'),
-        price: new BigNumber('37089.17')
-      })
-      priceFeed.update(new BigNumber('37089.17'))
+      pos.addOrder('0.1', '37089.17')
+      priceFeed.update('37089.17')
 
-      pos.addOrder({
-        amount: new BigNumber('0.1'),
-        price: new BigNumber('40229.09')
-      })
-      priceFeed.update(new BigNumber('40229.09'))
+      pos.addOrder('0.1', '40229.09')
+      priceFeed.update('40229.09')
 
-      pos.addOrder({
-        amount: new BigNumber('0.04709128732'),
-        price: new BigNumber('37547.71')
-      })
-      priceFeed.update(new BigNumber('37547.71'))
+      pos.addOrder('0.04709128732', '37547.71')
+      priceFeed.update('37547.71')
 
       setImmediate(() => {
         expect(pos.positionSize().toFixed(2)).to.eq('0.35')
@@ -70,7 +58,7 @@ describe('PerformanceManager', () => {
     })
 
     it('update price', (done) => {
-      priceFeed.update(new BigNumber('34955.37'))
+      priceFeed.update('34955.37')
 
       setImmediate(() => {
         expect(pos.equityCurve().toFixed(2)).to.eq('12132.71')
@@ -82,10 +70,7 @@ describe('PerformanceManager', () => {
     })
 
     it('sell all', () => {
-      pos.addOrder({
-        amount: pos.positionSize().negated(),
-        price: new BigNumber('32177.86')
-      })
+      pos.addOrder(pos.positionSize().negated(), '32177.86')
 
       expect(pos.positionSize().toFixed(2)).to.eq('0.00')
       expect(pos.currentAllocation().toFixed(2)).to.eq('0.00')
@@ -98,10 +83,7 @@ describe('PerformanceManager', () => {
 
     it('try to over-sell', () => {
       try {
-        pos.addOrder({
-          amount: new BigNumber(-1),
-          price: new BigNumber('32177.86')
-        })
+        pos.addOrder(-1, '32177.86')
         assert.fail()
       } catch (e) {
         expect(e.message).to.eq('can not over-sell position')
@@ -112,22 +94,13 @@ describe('PerformanceManager', () => {
   describe('add orders', () => {
     it('partial sell', () => {
       const pos = new PerformanceManager(priceFeed, constraints)
-      const price = new BigNumber(1000)
+      const price = 1000
 
-      pos.addOrder({
-        amount: new BigNumber(0.3),
-        price
-      })
+      pos.addOrder(0.3, price)
 
-      pos.addOrder({
-        amount: new BigNumber(0.7),
-        price
-      })
+      pos.addOrder(0.7, price)
 
-      pos.addOrder({
-        amount: new BigNumber(-0.5),
-        price
-      })
+      pos.addOrder(-0.5, price)
 
       expect(pos.positionSize().toNumber()).to.eq(0.5)
     })
@@ -137,16 +110,16 @@ describe('PerformanceManager', () => {
     const pos = new PerformanceManager(priceFeed, constraints)
 
     it('order is valid', () => {
-      const amount = new BigNumber(0.5)
-      const price = new BigNumber(500)
+      const amount = 0.5
+      const price = 500
       const err = pos.canOpenOrder(amount, price)
 
       expect(err).to.be.null
     })
 
     it('max size exceeded', () => {
-      const amount = new BigNumber(4)
-      const price = new BigNumber(500)
+      const amount = 4
+      const price = 500
       const err = pos.canOpenOrder(amount, price)
 
       expect(err).to.be.instanceOf(Error)
@@ -154,8 +127,8 @@ describe('PerformanceManager', () => {
     })
 
     it('max alloc exceeded', () => {
-      const amount = new BigNumber(0.5)
-      const price = new BigNumber(50000)
+      const amount = 0.5
+      const price = 50000
       const err = pos.canOpenOrder(amount, price)
 
       expect(err).to.be.instanceOf(Error)
@@ -163,8 +136,8 @@ describe('PerformanceManager', () => {
     })
 
     it('total is greater than the available funds', () => {
-      const amount = new BigNumber(0.5)
-      const price = new BigNumber(3000)
+      const amount = 0.5
+      const price = 3000
 
       const pos = new PerformanceManager(priceFeed, constraints)
       pos.availableFunds = new BigNumber(500)
@@ -175,8 +148,8 @@ describe('PerformanceManager', () => {
     })
 
     it('short not allowed', () => {
-      const amount = new BigNumber(-0.5)
-      const price = new BigNumber(50000)
+      const amount = -0.5
+      const price = 50000
       const pos = new PerformanceManager(priceFeed, constraints)
       const err = pos.canOpenOrder(amount, price)
 
