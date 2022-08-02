@@ -57,11 +57,11 @@ class PerformanceManager extends EventEmitter {
     const currentAllocation = this.currentAllocation()
     const newAllocatedCapital = currentAllocation.plus(total)
     if (newAllocatedCapital.isGreaterThan(this.allocation)) {
-      return new Error(`order exceeds max allocation (total: ${total}, current alloc: ${currentAllocation}, max alloc: ${this.allocation})`)
+      return new Error(`the order exceeds the allocation limit (order size: ${amount}, allocated: ${currentAllocation}, limit: ${this.allocation})`)
     }
 
     if (total.isGreaterThan(this.availableFunds)) {
-      return new Error(`order exceeds available funds (total: ${total}, available funds: ${this.availableFunds})`)
+      return new Error(`the order exceeds available funds (order size: ${total}, available funds: ${this.availableFunds})`)
     }
 
     return null
@@ -101,7 +101,7 @@ class PerformanceManager extends EventEmitter {
     }
 
     if (this.positionSize().isLessThan(amount.abs())) {
-      throw new Error('can not over-sell position')
+      throw new Error('short positions are not supported in this version')
     }
 
     this.availableFunds = this.availableFunds.plus(total.abs())

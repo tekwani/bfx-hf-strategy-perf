@@ -86,7 +86,7 @@ describe('PerformanceManager', () => {
         pos.addOrder(-1, '32177.86')
         assert.fail()
       } catch (e) {
-        expect(e.message).to.eq('can not over-sell position')
+        expect(e.message).to.eq('short positions are not supported in this version')
       }
     })
   })
@@ -132,7 +132,7 @@ describe('PerformanceManager', () => {
       const err = pos.canOpenOrder(amount, price)
 
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.eq('order exceeds max allocation (total: 25000, current alloc: 0, max alloc: 13000)')
+      expect(err.message).to.eq('the order exceeds the allocation limit (order size: 0.5, allocated: 0, limit: 13000)')
     })
 
     it('total is greater than the available funds', () => {
@@ -144,7 +144,7 @@ describe('PerformanceManager', () => {
       const err = pos.canOpenOrder(amount, price)
 
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.eq('order exceeds available funds (total: 1500, available funds: 500)')
+      expect(err.message).to.eq('the order exceeds available funds (order size: 1500, available funds: 500)')
     })
 
     it('short not allowed', () => {
