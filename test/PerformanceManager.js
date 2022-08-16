@@ -9,8 +9,8 @@ const PerformanceManager = require('../src/PerformanceManager')
 const PriceFeed = require('../src/PriceFeed')
 
 describe('PerformanceManager', () => {
-  const priceFeed = new PriceFeed(35000)
-
+  const priceFeed = new PriceFeed({ initialPrice: 35000 })
+  const mts = Date.now()
   const constraints = {
     maxPositionSize: 1,
     allocation: 13000
@@ -35,13 +35,13 @@ describe('PerformanceManager', () => {
       pos.addOrder('0.1', '35000')
 
       pos.addOrder('0.1', '37089.17')
-      priceFeed.update('37089.17')
+      priceFeed.update('37089.17', mts, true)
 
       pos.addOrder('0.1', '40229.09')
-      priceFeed.update('40229.09')
+      priceFeed.update('40229.09', mts, true)
 
       pos.addOrder('0.04709128732', '37547.71')
-      priceFeed.update('37547.71')
+      priceFeed.update('37547.71', mts, true)
 
       setImmediate(() => {
         expect(pos.positionSize().toFixed(2)).to.eq('0.35')
@@ -58,7 +58,7 @@ describe('PerformanceManager', () => {
     })
 
     it('update price', (done) => {
-      priceFeed.update('34955.37')
+      priceFeed.update('34955.37', mts, true)
 
       setImmediate(() => {
         expect(pos.equityCurve().toFixed(2)).to.eq('12132.71')
