@@ -22,7 +22,6 @@ class PerformanceManager extends EventEmitter {
     this.priceFeed = priceFeed
 
     this.peak = new BigNumber(allocation)
-    this.prevPeak = new BigNumber(0)
     this.trough = new BigNumber(allocation)
     this.openOrders = []
 
@@ -150,10 +149,10 @@ class PerformanceManager extends EventEmitter {
    */
   drawdown () {
     const equityCurve = this.equityCurve()
-    if (equityCurve.isGreaterThanOrEqualTo(this.prevPeak) || this.prevPeak.isZero()) {
+    if (equityCurve.isGreaterThanOrEqualTo(this.peak) || this.peak.isZero()) {
       return new BigNumber(0)
     }
-    return this.prevPeak.minus(equityCurve).dividedBy(this.prevPeak)
+    return this.peak.minus(equityCurve).dividedBy(this.peak)
   }
 
   /**
@@ -171,7 +170,6 @@ class PerformanceManager extends EventEmitter {
   updatePeak () {
     const equityCurve = this.equityCurve()
     if (equityCurve.isGreaterThan(this.peak)) {
-      this.prevPeak = this.peak
       this.peak = equityCurve
     }
   }
