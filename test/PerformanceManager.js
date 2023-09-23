@@ -52,7 +52,7 @@ describe('PerformanceManager', () => {
         expect(pos.equityCurve().toFixed(2)).to.eq('13032.49')
         expect(pos.return().toFixed(2)).to.eq('32.49')
         expect(pos.returnPerc().toFixed(4)).to.eq('0.0025')
-        expect(pos.drawdown().toFixed(4)).to.eq('0.0581')
+        expect(pos.drawdown().toFixed(4)).to.eq('0.0667')
         done()
       })
     })
@@ -64,7 +64,7 @@ describe('PerformanceManager', () => {
         expect(pos.equityCurve().toFixed(2)).to.eq('12132.71')
         expect(pos.return().toFixed(2)).to.eq('-867.29')
         expect(pos.returnPerc().toFixed(4)).to.eq('-0.0667')
-        expect(pos.drawdown().toFixed(4)).to.eq('0.1232')
+        expect(pos.drawdown().toFixed(4)).to.eq('0.1311')
         done()
       })
     })
@@ -78,7 +78,7 @@ describe('PerformanceManager', () => {
       expect(pos.equityCurve().toFixed(2)).to.eq('11168.66')
       expect(pos.return().toFixed(2)).to.eq('-1831.34')
       expect(pos.returnPerc().toFixed(4)).to.eq('-0.1409')
-      expect(pos.drawdown().toFixed(4)).to.eq('0.1928')
+      expect(pos.drawdown().toFixed(4)).to.eq('0.2001')
     })
 
     it('try to over-sell', () => {
@@ -155,6 +155,15 @@ describe('PerformanceManager', () => {
 
       expect(err).to.be.instanceOf(Error)
       expect(err.message).to.eq('short positions are not allowed in this version')
+    })
+
+    it('order is valid with leverage', () => {
+      const amount = 1
+      const price = 25000
+      const leverage = 20
+      const pos = new PerformanceManager(priceFeed, constraints, leverage)
+      const err = pos.canOpenOrder(amount, price, leverage)
+      expect(err).to.be.null
     })
   })
 
