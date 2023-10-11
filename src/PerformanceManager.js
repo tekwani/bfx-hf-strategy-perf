@@ -31,9 +31,10 @@ class PerformanceManager extends EventEmitter {
   /**
    * @param amount
    * @param price
+   * @param leverage
    * @returns {Error|null}
    */
-  canOpenOrder (amount, price) {
+  canOpenOrder (amount, price, leverage) {
     amount = new BigNumber(amount)
     price = new BigNumber(price)
 
@@ -51,9 +52,10 @@ class PerformanceManager extends EventEmitter {
       return new Error('short positions are not allowed in this version')
     }
 
-    const total = amount.multipliedBy(price)
+    // apply leverage to order cost calculation
+    const total = leverage ? amount.multipliedBy(price).dividedBy(leverage) : amount.multipliedBy(price)
 
-    const currentAllocation = this.currentAllocation()
+    const currentAllocation = this.currentAllocation(leverage)
     const newAllocatedCapital = currentAllocation.plus(total)
     if (newAllocatedCapital.isGreaterThan(this.allocation)) {
       return new Error(`the order exceeds the allocation limit (order size: ${amount}, allocated: ${currentAllocation}, limit: ${this.allocation})`)
@@ -79,18 +81,23 @@ class PerformanceManager extends EventEmitter {
   /**
    * @returns {BigNumber}
    */
-  currentAllocation () {
-    return this.openOrders.reduce((alloc, order) =>
-      alloc.plus(order.amount.multipliedBy(order.price)),
+  currentAllocation (leverage) {
+    return this.openOrders.reduce((alloc, order) => {
+      const orderCost = leverage
+        ? order.amount.multipliedBy(order.price).dividedBy(leverage)
+        : order.amount.multipliedBy(order.price)
+      return alloc.plus(orderCost)
+    },
     new BigNumber(0)
     )
   }
 
-  addOrder (amount, price) {
+  addOrder (amount, price, leverage) {
     amount = new BigNumber(amount)
     price = new BigNumber(price)
 
-    const total = amount.multipliedBy(price)
+    // adjust order total if there's leverage set for the order
+    const total = leverage ? amount.multipliedBy(price).dividedBy(leverage) : amount.multipliedBy(price)
 
     if (amount.isPositive()) {
       this.availableFunds = this.availableFunds.minus(total)
